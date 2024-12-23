@@ -1,0 +1,39 @@
+#define TRIG_PIN 9
+#define ECHO_PIN 10
+#define BUZZER_PIN 11
+
+void setup() {
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Trigger the ultrasonic pulse
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  // Measure the duration of the echo
+  long duration = pulseIn(ECHO_PIN, HIGH);
+  
+  // Calculate the distance in cm
+  float distance = duration * 0.034 / 2;
+
+  // Print the distance for debugging
+  Serial.println(distance);
+
+  // Check for motion by detecting sudden changes in distance
+  if (distance > 0 && distance < 100) { // Adjust 100cm as needed
+    digitalWrite(BUZZER_PIN, HIGH); // Turn buzzer on
+    delay(500); // Wait 0.5 second
+    digitalWrite(BUZZER_PIN, LOW); // Turn buzzer off
+  } else {
+    digitalWrite(BUZZER_PIN, LOW); // Keep buzzer off
+  }
+
+  delay(200); // Short delay between measurements
+}
